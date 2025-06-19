@@ -62,38 +62,49 @@ int	fill_flags(int *flag, const char *c)
 	return (1);
 }
 
-void	char_flag(const char *c)
+void	char_flag(char my_arg, const char  **c)
 {
 	int value = 0;
-	const char	*d;
 
-	d = c;
-	ft_putchar(*c);
-	d++;
-	while (*d != 'c')
+	ft_putchar(my_arg);
+	(*c)++;
+	while (**c != 'c')
 	{
-		value += value*10 + (*d - '0');
-		d++;
+		value = value*10 + (**c - '0');
+		(*c)++;
 	}
-	while (--value)
+	while (--value > 0)
 		ft_putchar(' ');
 }
 
-void	check_condition(int flag, const char *c, va_list args)
+void	char_noflag(char my_arg, const char  **c)
+{
+	int value = 0;
+
+	while (**c != 'c')
+	{
+		value = value*10 + (**c - '0');
+		(*c)++;
+	}
+	while (--value > 0)
+		ft_putchar(' ');
+	ft_putchar(my_arg);
+}
+
+void	check_condition(int flag, const char **c, va_list args)
 {
 	char	my_arg;
 
 	my_arg = 0;
-	if (*c == 'c' || is_flag(*c))
-	{
-		my_arg	= (char)va_arg(args, int);
-		if (flag && flag ^ FLAG_MINUS)
-			return ;
-		if (flag & FLAG_MINUS)
-			char_flag(c);
-		else
-			ft_putchar(my_arg);
-	}
+	my_arg	= (char)va_arg(args, int);
+	if (flag && flag ^ FLAG_MINUS)
+		return ;
+	if (flag & FLAG_MINUS)
+		char_flag(my_arg, c);
+	else if (**c >= '0' && **c <= '9')
+		char_noflag(my_arg, c);
+	else if (**c == 'c')
+		ft_putchar(my_arg);
 }
 
 int	ft_printf(const char *fstring, ...)
@@ -116,10 +127,10 @@ int	ft_printf(const char *fstring, ...)
 		c++;
 		if (!fill_flags(&flag, c))
 		{
-			ft_putchar('%');
-			continue ;
+			return (0);
 		}
-		check_condition(flag, c++, args);
+		check_condition(flag, &c, args);
+		c++;
 	}
 	va_end(args);
 	return (1);
@@ -127,5 +138,6 @@ int	ft_printf(const char *fstring, ...)
 
 int	main()
 {
-	ft_printf("aaaaaaaaaaaaaaaaa %-10ci \\_O,o_/)\n", 'o');
+	ft_printf("aaaaaaaaaaaaaaaaa %-#10c \\_O,o_/)\n", 'o');
+	//printf("aaaaaaaaaaaaaaaaa %-10c \\_O,o_/)\n", 'o');
 }
