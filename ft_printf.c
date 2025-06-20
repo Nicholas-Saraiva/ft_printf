@@ -4,18 +4,10 @@
 #include <unistd.h>
 #include <stdio.h>
 
-int	is_flag(char my_char)
+int	is_flag(char c)
 {
-	const char	flags[] = "-+0#. ";
-	int		i;
-
-	i = 0;
-	while (flags[i])
-	{
-		if (my_char == flags[i])
-			return (1);
-		i++;
-	}
+	if (c == '-' || c == '0' || c == '.' || c == '#' || c == ' ' || c == '+')
+		return (1);
 	return (0);
 }
 
@@ -26,68 +18,61 @@ int	is_number(char my_char)
 	return (0);
 }
 
-void	fill_flags(int *flag, const char **c)
+int	fill_flags(const char **c)
 {
-	const char	*my_char;
 	int			flag;
 
 	flag = 0;
-	while (is_flag(*c))
+	while (is_flag(**c))
 	{
-		if (*my_char == '-')
-			*flag |= FLAG_MINUS;
-		if (*my_char == '.')
-			*flag |= FLAG_DOT;
-		if (*my_char == '0')
-			*flag |= FLAG_ZERO;
-		if (*my_char == '#')
-			*flag |= FLAG_HASH;
-		if (*my_char == '+')
-			*flag |= FLAG_PLUS;
-		if (*my_char == ' ')
-			*flag |= FLAG_SPACE;
+		if (**c == '-')
+			flag |= FLAG_MINUS;
+		if (**c == '.')
+			flag |= FLAG_DOT;
+		if (**c == '0')
+			flag |= FLAG_ZERO;
+		if (**c == '#')
+			flag |= FLAG_HASH;
+		if (**c == '+')
+			flag |= FLAG_PLUS;
+		if (**c == ' ')
+			flag |= FLAG_SPACE;
 		(*c)++;
 	}
 	return flag;
 }
 
-int	char_flag(char my_arg, const char  **c, int width)
+int	char_flag(char my_arg, int width)
 {
 	int	i;
 	
 	i = 1;
 	ft_putchar(my_arg);
-	(*c)++;
 	while (width - i++ > 0)
 		ft_putchar(' ');
-	return (width);
+	return (i - 1);
 }
 
-void	char_noflag(char my_arg, const char  **c)
+int	char_noflag(char my_arg, int width)
 {
-	int value = 0;
+	int i;
 
-	while (**c != 'c')
-	{
-		value = value*10 + (**c - '0');
-		(*c)++;
-	}
-	while (--value > 0)
+	i = 1;
+	while (width - i++ > 0)
 		ft_putchar(' ');
 	ft_putchar(my_arg);
+	return (i - 1);
 }
 
-int	condition_for_c(int flag, const char **c, va_list args, int width)
+int	condition_for_c(int flag, va_list args, int width)
 {
 	char	my_arg;
 
 	my_arg	= (char)va_arg(args, int);
 	if (flag & FLAG_MINUS)
-		return (char_flag(my_arg, c, width));
-	else if (**c >= '0' && **c <= '9')
-		return (char_noflag(my_arg, c));
-	else if (**c == 'c')
-		ft_putchar(my_arg);
+		return (char_flag(my_arg, width));
+	else
+		return (char_noflag(my_arg, width));
 }
 
 void	ft_putstr(char *my_arg)
@@ -102,7 +87,7 @@ void	ft_putstr(char *my_arg)
 void	string_flag(char *my_arg, const char  **c)
 {
 	int value;
-	int	aasteps;
+	int	steps;
 	int	i;
 
 	i = 0;
@@ -164,33 +149,33 @@ void	fill_measures(int *width, int *precision, const char **c)
 {
 	while (is_number(**c))
 	{
-		*width += *width*10 + **c - '0';
+		*width = *width*10 + **c - '0';
 	   (*c)++;	
 	}
-	if (*c == '.')
+	if (**c == '.')
 	{
 		while (is_number(**c))
 		{
-			*precision += *precision*10 + **c - '0';
+			*precision = *precision*10 + **c - '0';
 			(*c)++;
 		}
 	}
 }
 
-void	check_condition(int flag, const char **c, va_list args)
+int	check_condition(int flag, const char **c, va_list args)
 {
-	const char *my_char;
 	int			width;
 	int			precision;
 
-	my_char = *c;
 	width = 0;
-	precision = 0;
+	precision = -1;
 	fill_measures(&width, &precision, c);
-	if (*my_char == 'c')
-		condition_for_c(flag, c, args);
-	if (*my_char == 's')
-		condition_for_s(flag, c, args);
+	if (**c == 'c')
+		return (condition_for_c(flag, args, width));
+	if (**c == 's')
+		return (condition_for_s(flag, c, args));
+
+	return (1);
 }
 
 int	ft_printf(const char *fstring, ...)
@@ -206,11 +191,14 @@ int	ft_printf(const char *fstring, ...)
 	{
 		if(*c != '%')
 		{
-			ft_putchar(*c++);
+			ft_putchar(*c);
 			size++;
 		}
 		else
-			size += check_condition(fill_flags(c), &c, args);
+		{
+			c++;
+			size += check_condition(fill_flags(&c), &c, args);
+		}
 		c++;
 	}
 	va_end(args);
@@ -219,8 +207,14 @@ int	ft_printf(const char *fstring, ...)
 
 int	main()
 {
-	ft_printf("aaaaaaaaaaaaaaaaa %.15cTT", "\\_O,o_/");
-	printf("aaaaaaaaaaaaaaaaa %.15cTT", "\\_O,o_/");
+ 
+	int a = ft_printf("%2c\n", '5');
+	int b = ft_printf("%-2c\n", '5');
+
+	int c = printf("%2c\n", '5');
+	int d = printf("%-2c\n", '5');
+
+	printf("%d-%d-%d-%d", a, b, c,d);
 
 	//printf("aaaaaaaaaaaaaaaaa %-10#c \\_O,o_/)\n", 'o');
 }
