@@ -21,71 +21,46 @@ int	is_flag(char my_char)
 
 int	is_number(char my_char)
 {
-	int	i;
-
-	i = 0;
 	if (my_char >= '0' && my_char <= '9')
 		return (1);
 	return (0);
 }
 
-int	fill_flags(int *flag, const char *c)
+void	fill_flags(int *flag, const char **c)
 {
 	const char	*my_char;
+	int			flag;
 
-	my_char = c;
-	while (is_flag(*my_char))
+	flag = 0;
+	while (is_flag(*c))
 	{
-		if (*my_char == '+')
-			*flag |= FLAG_PLUS;
-		if (*my_char == ' ' && !(*flag & FLAG_PLUS))
-			*flag |= FLAG_SPACE;
 		if (*my_char == '-')
-		{
 			*flag |= FLAG_MINUS;
-			my_char++;
-			while (*my_char && (*my_char >= '0' && *my_char <= '9'))
-				my_char++;
-			if (*my_char == '#' || *my_char == '+' || *my_char == ' ' || *my_char == '-')
-				return (0);
-		}
-		if (*my_char == '0' && !(*flag & FLAG_MINUS))
-		{
-
-			*flag |= FLAG_ZERO;
-			while (*my_char && (*my_char >= '0' && *my_char <= '9'))
-				my_char++;
-			if (*my_char == '#' || *my_char == '+' || *my_char == ' ')
-				return (0);
-		}
 		if (*my_char == '.')
-		{
 			*flag |= FLAG_DOT;
-			my_char++;
-			while (*my_char && (*my_char >= '0' && *my_char <= '9'))
-				my_char++;
-			if (*my_char == '#' || *my_char == '+' || *my_char == ' ' || *my_char == '.')
-				return (0);
-		}
+		if (*my_char == '0')
+			*flag |= FLAG_ZERO;
 		if (*my_char == '#')
 			*flag |= FLAG_HASH;
-	}
-	return (1);
-}
-
-void	char_flag(char my_arg, const char  **c)
-{
-	int value = 0;
-
-	ft_putchar(my_arg);
-	(*c)++;
-	while (**c != 'c')
-	{
-		value = value*10 + (**c - '0');
+		if (*my_char == '+')
+			*flag |= FLAG_PLUS;
+		if (*my_char == ' ')
+			*flag |= FLAG_SPACE;
 		(*c)++;
 	}
-	while (--value > 0)
+	return flag;
+}
+
+int	char_flag(char my_arg, const char  **c, int width)
+{
+	int	i;
+	
+	i = 1;
+	ft_putchar(my_arg);
+	(*c)++;
+	while (width - i++ > 0)
 		ft_putchar(' ');
+	return (width);
 }
 
 void	char_noflag(char my_arg, const char  **c)
@@ -102,17 +77,15 @@ void	char_noflag(char my_arg, const char  **c)
 	ft_putchar(my_arg);
 }
 
-void	condition_for_c(int flag, const char **c, va_list args)
+int	condition_for_c(int flag, const char **c, va_list args, int width)
 {
 	char	my_arg;
 
 	my_arg	= (char)va_arg(args, int);
-	if (flag && flag ^ FLAG_MINUS)
-		return ;
 	if (flag & FLAG_MINUS)
-		char_flag(my_arg, c);
+		return (char_flag(my_arg, c, width));
 	else if (**c >= '0' && **c <= '9')
-		char_noflag(my_arg, c);
+		return (char_noflag(my_arg, c));
 	else if (**c == 'c')
 		ft_putchar(my_arg);
 }
@@ -129,7 +102,7 @@ void	ft_putstr(char *my_arg)
 void	string_flag(char *my_arg, const char  **c)
 {
 	int value;
-	int	steps;
+	int	aasteps;
 	int	i;
 
 	i = 0;
@@ -175,7 +148,7 @@ void	condition_for_s(int flag, const char **c, va_list args)
 	char	*my_arg;
 
 	my_arg	= va_arg(args, char *);
-	if (flag && (flag ^ FLAG_MINUS) ^ FLAG_DOT)
+	if (flag && !((flag ^ FLAG_MINUS) ^ FLAG_DOT))
 		return ;
 	if (flag & FLAG_MINUS)
 		string_flag(my_arg, c);
@@ -183,15 +156,37 @@ void	condition_for_s(int flag, const char **c, va_list args)
 		string_noflag(my_arg, c);
 	else if (**c == 's')
 		ft_putstr(my_arg);
+	while(**c != 's')
+		(*c)++;
+}
+
+void	fill_measures(int *width, int *precision, const char **c)
+{
+	while (is_number(**c))
+	{
+		*width += *width*10 + **c - '0';
+	   (*c)++;	
+	}
+	if (*c == '.')
+	{
+		while (is_number(**c))
+		{
+			*precision += *precision*10 + **c - '0';
+			(*c)++;
+		}
+	}
 }
 
 void	check_condition(int flag, const char **c, va_list args)
 {
 	const char *my_char;
+	int			width;
+	int			precision;
 
 	my_char = *c;
-	while (is_flag(*my_char) || is_number(*my_char))
-		my_char++;
+	width = 0;
+	precision = 0;
+	fill_measures(&width, &precision, c);
 	if (*my_char == 'c')
 		condition_for_c(flag, c, args);
 	if (*my_char == 's')
@@ -202,35 +197,30 @@ int	ft_printf(const char *fstring, ...)
 {
 	va_list	args;
 	const char	*c;
-	int		flag;
+	int		size;
 
 	va_start(args, fstring);
 	c = fstring;
-	flag = 0;
+	size = 0;
 	while (*c)
 	{
 		if(*c != '%')
 		{
-			ft_putchar(*c);
-			c++;
-			continue ;
+			ft_putchar(*c++);
+			size++;
 		}
-		c++;
-		if (!fill_flags(&flag, c))
-		{
-			return (0);
-		}
-		check_condition(flag, &c, args);
+		else
+			size += check_condition(fill_flags(c), &c, args);
 		c++;
 	}
 	va_end(args);
-	return (1);
+	return (size);
 }
 
 int	main()
 {
-	ft_printf("aaaaaaaaaaaaaaaaa %-.15sTT", "\\_O,o_/");
-	printf("aaaaaaaaaaaaaaaaa %-.15sTT", "\\_O,o_/");
+	ft_printf("aaaaaaaaaaaaaaaaa %.15cTT", "\\_O,o_/");
+	printf("aaaaaaaaaaaaaaaaa %.15cTT", "\\_O,o_/");
 
 	//printf("aaaaaaaaaaaaaaaaa %-10#c \\_O,o_/)\n", 'o');
 }
