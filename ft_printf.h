@@ -6,13 +6,15 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 04:07:16 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/18 16:24:26 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/23 11:37:08 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
 # include <unistd.h>
+# include <stdint.h>
+# include <stdarg.h>
 
 # define FLAG_MINUS 1 << 0 // 1
 # define FLAG_ZERO 1 << 1 // 2
@@ -21,5 +23,21 @@
 # define FLAG_SPACE 1 << 4 // 16
 # define FLAG_PLUS 1 << 5 // 32
 
-void	ft_putchar(char c);
+int	ft_putchar(char c);
+int	ft_strlen(const char *s);
+int	is_flag(char c);
+int	is_number(char my_char);
+int	fill_flags(const char **c);
+int	char_flag(char my_arg, int width);
+int	char_noflag(char my_arg, int width);
+int	condition_for_c(int flag, va_list args, int width);
+int	string_flag(char *my_arg, int flag, int width, int precision);
+int	string_noflag(char *my_arg, int flag, int width, int precision);
+int	condition_for_s(int flag, va_list args, int width, int precision);
+int	ft_puthex_p(unsigned long long n);
+int ft_strhex_len(unsigned long long n);
+int	ft_minus_p(unsigned long long n, int width);
+int	condition_for_p(int flag, va_list arg, int width);
+void	fill_measures(int *width, int *precision, const char **c, int *flag);
+
 #endif

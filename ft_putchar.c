@@ -6,12 +6,12 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/16 14:55:20 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/18 16:23:57 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/22 18:17:49 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "ft_printf.h"
 
-void	ft_putchar(char c)
+int	ft_putchar(char c)
 {
-	write(1, &c, 1);
+	return (write(1, &c, 1));
 }
