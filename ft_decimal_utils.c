@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_pointer_ultis.c                                 :+:      :+:    :+:   */
+/*   ft_decimal_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 11:34:50 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/23 11:35:00 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/23 20:18:12 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_puthex_p(unsigned long long n)
+int	ft_putdecimal_d(unsigned long long n)
 {
     int		size;
     char	*base;
@@ -25,7 +25,7 @@ int	ft_puthex_p(unsigned long long n)
     return (size);
 }
 
-int	ft_strhex_len(unsigned long long n)
+int	ft_strdecimal_len(unsigned long long n)
 {
 	int	len;
 
@@ -38,7 +38,7 @@ int	ft_strhex_len(unsigned long long n)
 	return (len + 3);
 }
 
-int	ft_minus_p(unsigned long long n, int width)
+int	ft_minus_d(unsigned long long n, int width)
 {
 	int	size;
 
@@ -49,31 +49,42 @@ int	ft_minus_p(unsigned long long n, int width)
 	return (size);
 }
 
-int	condition_for_p(int flag, va_list arg, int width)
+int	pre_print_d(unsigned long long n, int flag, int width, int len)
 {
-	unsigned long long n;
 	int	size;
-	int len;
-	int	i;
 
 	size = 0;
-	i = 0;
-	n = (unsigned long long) va_arg(arg, void *);
-	len = ft_strhex_len(n);
 	if (!(flag & FLAG_ZERO) && !(flag & FLAG_MINUS))
-		while (len + i++ < width)
+		while (len + size < width)
 			size += ft_putchar (' ');
+	if (!n)
+	{
+		size += write(1, "(nil)", 5);	
+		return (size);
+	}
 	if (flag & FLAG_SPACE)
 		size += write(1, " ", 1);
 	else if (flag & FLAG_PLUS)
 		size += write(1, "+", 1);
 	size += write(1, "0x", 2);
-	if (flag & FLAG_ZERO)
-		while (len + i++ < width)
+	return (size);
+}
+
+int	condition_for_d(int flag, va_list arg, int width)
+{
+	unsigned long long n;
+	int	size;
+	int len;
+	
+	n = (unsigned long long) va_arg(arg, void *);
+	len = ft_strhex_len(n);
+	size = pre_print_p(n, flag, width, len);
+	if (n && flag & FLAG_ZERO)
+		while (len + size < width)
 			size += ft_putchar ('0');
 	if (flag & FLAG_MINUS)
 		ft_minus_p(n, width);
-	else
+	else if (n)
 		ft_puthex_p(n);
 	return (size);
 }

@@ -6,7 +6,7 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 11:26:44 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/23 11:28:15 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/23 17:24:29 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,10 +67,10 @@ void	fill_measures(int *width, int *precision, const char **c, int *flag)
 {
 	int	new_precision;
 
-	new_precision = -1;
+	new_precision = 0;
 	while (is_number(**c))
 	{
-		*width = *width*9 + **c - '0';
+		*width = *width*10 + **c - '0';
 	   (*c)++;	
 	}
 	if (**c == '.')
