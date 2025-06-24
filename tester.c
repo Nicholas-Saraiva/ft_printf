@@ -84,6 +84,19 @@ int main(void)
     printf("printf returned: %d\n", ret_printf);
     printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
 
+	ret_ft_printf = ft_printf("%-8.3d\n", -84730);
+    ret_printf = printf("%-8.3d\n", -84730);
+    printf("ft_printf returned: %d\n", ret_ft_printf);
+    printf("printf returned: %d\n", ret_printf);
+    printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+	ret_ft_printf = ft_printf("%8.5d\n", 34);
+    ret_printf = printf("%8.5d\n", 34);
+    printf("ft_printf returned: %d\n", ret_ft_printf);
+    printf("printf returned: %d\n", ret_printf);
+    printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+
 
     return (0);
 }

@@ -6,13 +6,13 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 11:34:50 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/24 02:10:34 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:33:46 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_display_number(int n)
+static int	ft_display_number(int n)
 {
 	char	nbr;
 
@@ -20,7 +20,7 @@ int	ft_display_number(int n)
 	return (write(1, &nbr, 1));
 }
 
-int	ft_putnbr(int n)
+static int	ft_putnbr(int n)
 {
 	int	size;
 
@@ -35,78 +35,95 @@ int	ft_putnbr(int n)
 	return (size);
 }
 
-int	ft_decimal_size(int n)
+static int	signal_flag(int n, int flag)
 {
-	int	len;
+	if (flag & FLAG_PLUS)
+	{
+		if (n >= 0)
+			return (write(1, "+", 1)); 
+		return (write(1, "-", 1));
+	}
+	if (flag & FLAG_SPACE)
+	{
+		if (n >= 0)
+			return (write(1," ", 1));
+		return (write(1, "-", 1));
+	}
+	if (n < 0)
+		return (write(1, "-", 1));
+	return (0);
+}
 
-	len = 0;
+static int	decimal_len(int n)
+{
+	int	i;
+
+	i = 0;
 	while (n > 10 || n < -10)
 	{
-		n /= 10;
-		len++;
+		n /= 10;	
+		i++;
 	}
-	return (len + 1);
+	return (i + 1);
 }
 
-int	ft_minus_d(int n, int width)
+static int	decimal_flag(int n, int flag, int width, int precision)
 {
-	int	size;
-
-	size = 0;
-	size += ft_putnbr(n);
-	while (size < width)
-		size += ft_putchar (' ');
-	if (n < 0)
-		size += write(1, "-", 1);
-	return (size);
-}
-
-int	pre_print_d(int flag, int width, int len)
-{
-	int	size;
-
-	size = 0;
-	if (!(flag & FLAG_ZERO) && !(flag & FLAG_MINUS))
-		while (len + size < width)
-			size += ft_putchar (' ');
-	if (flag & FLAG_SPACE)
-		size += write(1, " ", 1);
-	else if (flag & FLAG_PLUS)
-		size += write(1, "+", 1);
-	return (size);
-}
-
-int	condition_for_d(int flag, va_list arg, int width, int precision)
-{
-	int	n;
-	int	size;
+	int	i;
 	int len;
-	
-	n =	va_arg(arg, int);
-	len = ft_decimal_size(n);
-	size = 0;
-	if (n < 0)
-	{
-		size++;
-		len++;
-		if (flag & FLAG_DOT || flag & FLAG_ZERO)
-			write(1, "-", 1);
-	}
-	size += pre_print_d(flag, width, len);
-	if (flag & FLAG_DOT)
-		while (len + size < precision + 1)
-			size += ft_putchar ('0');
-	if (flag & FLAG_ZERO)
-		while (len + size < width + 1)
-			size += ft_putchar ('0');
-	if (flag & FLAG_MINUS)
-		size += ft_minus_d(n, width);
-	else
-	{
-		if (n < 0 && !(flag & FLAG_DOT) && !(flag & FLAG_ZERO))
-			write(1, "-", 1);
-		size += ft_putnbr(n);
-	}
-	return (size);
+
+	i = 0;
+	len = decimal_len(n);
+	i += signal_flag(n, flag);
+	while (precision > len && precision - len > i + 1)
+		i += write(1, "0", 1);
+	i += ft_putnbr(n);
+	while (width > 0 && i < width)
+		i += ft_putchar(' ');
+	return (i);
 }
 
+int	decimal_noflag(int n, int flag, int width, int precision)
+{
+	int	i;
+	int	j;
+	int len;
+	int	size;
+
+	i = 0;
+	j = 0;
+	len = decimal_len(n);
+	size = len;
+	if (flag & FLAG_DOT && precision > len)
+		size = precision + 1;
+	if (flag & FLAG_PLUS || flag & FLAG_SPACE || n < 0)
+		i++;
+	if (flag & FLAG_ZERO)
+		signal_flag(n, flag);
+	while (width && width > size && width - (size) > i)
+	{
+		if (!(flag & FLAG_ZERO))
+			i += ft_putchar(' ');
+		else
+			i += ft_putchar('0');
+	}
+	if (!(flag & FLAG_ZERO))
+		signal_flag(n, flag);
+	while (precision > len && precision - len + 1 > j++)
+		i += write(1, "0", 1);
+	i += ft_putnbr(n);
+	return (i);
+}
+
+
+
+int	condition_for_decimal(int flag, va_list args, int width, int precision)
+{
+	int	my_arg;
+
+	my_arg	= va_arg(args, int);
+	if (flag & FLAG_MINUS)
+		return (decimal_flag(my_arg, flag, width, precision));
+	else
+		return (decimal_noflag(my_arg, flag, width, precision));
+}

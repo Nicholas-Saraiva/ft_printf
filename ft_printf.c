@@ -6,7 +6,7 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 21:37:58 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/24 01:40:14 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/24 17:40:51 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,9 +27,7 @@ int	check_condition(int flag, const char **c, va_list args)
 	if (**c == 'p')
 		return (condition_for_p(flag, args, width));
 	if (**c == 'd' || **c == 'i')
-		return (condition_for_d(flag, args, width, precision));
-
-
+		return (condition_for_decimal(flag, args, width, precision));
 
 	return (1);
 }
