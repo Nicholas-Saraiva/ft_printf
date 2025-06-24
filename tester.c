@@ -54,11 +54,36 @@ int main(void)
     printf("printf returned: %d\n", ret_printf);
     printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
 
-
 	ret_ft_printf = ft_printf("%p\n", NULL);
     ret_printf = printf("%+p\n", NULL);
     printf("ft_printf returned: %d\n", ret_ft_printf);
     printf("printf returned: %d\n", ret_printf);
     printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+	ret_ft_printf = ft_printf("%d\n", 0);
+    ret_printf = printf("%d\n", 0);
+    printf("ft_printf returned: %d\n", ret_ft_printf);
+    printf("printf returned: %d\n", ret_printf);
+    printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+	ret_ft_printf = ft_printf("%.5d\n", 2);
+    ret_printf = printf("%.5d\n", 2);
+    printf("ft_printf returned: %d\n", ret_ft_printf);
+    printf("printf returned: %d\n", ret_printf);
+    printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+	ret_ft_printf = ft_printf("%07d\n", -54);
+    ret_printf = printf("%07d\n", -54);
+    printf("ft_printf returned: %d\n", ret_ft_printf);
+    printf("printf returned: %d\n", ret_printf);
+    printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+	ret_ft_printf = ft_printf("%7d\n", -54);
+    ret_printf = printf("%7d\n", -54);
+    printf("ft_printf returned: %d\n", ret_ft_printf);
+    printf("printf returned: %d\n", ret_printf);
+    printf("\n=-=-=-=-=-=-=-=-=-=-=-=-=-=-=\n");
+
+
     return (0);
 }

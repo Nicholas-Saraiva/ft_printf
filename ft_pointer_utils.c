@@ -6,7 +6,7 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 11:34:50 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/23 19:31:25 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/24 01:14:32 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,9 +83,9 @@ int	condition_for_p(int flag, va_list arg, int width)
 		while (len + size < width)
 			size += ft_putchar ('0');
 	if (flag & FLAG_MINUS)
-		ft_minus_p(n, width);
+		size += ft_minus_p(n, width);
 	else if (n)
-		ft_puthex_p(n);
+		size += ft_puthex_p(n);
 	return (size);
 }
 

@@ -6,50 +6,62 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 11:34:50 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/23 20:18:12 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/24 02:10:34 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_putdecimal_d(unsigned long long n)
+int	ft_display_number(int n)
 {
-    int		size;
-    char	*base;
+	char	nbr;
 
-    size = 0;
-    base = "0123456789abcdef";
-    if (n > 16)
-        size += ft_puthex_p(n / 16);
-    size += write(1, &base[n % 16], 1);
-    return (size);
+	nbr = '0' + n;
+	return (write(1, &nbr, 1));
 }
 
-int	ft_strdecimal_len(unsigned long long n)
-{
-	int	len;
-
-	len = 0;
-	while (n > 16)
-	{
-		n /= 16;
-		len++;
-	}
-	return (len + 3);
-}
-
-int	ft_minus_d(unsigned long long n, int width)
+int	ft_putnbr(int n)
 {
 	int	size;
 
 	size = 0;
-	size += ft_puthex_p(n);
-	while (size + 2 < width)
-		size += ft_putchar (' ');
+	if (n == -2147483648)
+		return (write(1, "2147483648", 10));
+	if (n < 0)
+		n *= -1;
+	if (n > 9)
+		size += ft_putnbr(n / 10);
+	size += ft_display_number(n % 10);
 	return (size);
 }
 
-int	pre_print_d(unsigned long long n, int flag, int width, int len)
+int	ft_decimal_size(int n)
+{
+	int	len;
+
+	len = 0;
+	while (n > 10 || n < -10)
+	{
+		n /= 10;
+		len++;
+	}
+	return (len + 1);
+}
+
+int	ft_minus_d(int n, int width)
+{
+	int	size;
+
+	size = 0;
+	size += ft_putnbr(n);
+	while (size < width)
+		size += ft_putchar (' ');
+	if (n < 0)
+		size += write(1, "-", 1);
+	return (size);
+}
+
+int	pre_print_d(int flag, int width, int len)
 {
 	int	size;
 
@@ -57,35 +69,44 @@ int	pre_print_d(unsigned long long n, int flag, int width, int len)
 	if (!(flag & FLAG_ZERO) && !(flag & FLAG_MINUS))
 		while (len + size < width)
 			size += ft_putchar (' ');
-	if (!n)
-	{
-		size += write(1, "(nil)", 5);	
-		return (size);
-	}
 	if (flag & FLAG_SPACE)
 		size += write(1, " ", 1);
 	else if (flag & FLAG_PLUS)
 		size += write(1, "+", 1);
-	size += write(1, "0x", 2);
 	return (size);
 }
 
-int	condition_for_d(int flag, va_list arg, int width)
+int	condition_for_d(int flag, va_list arg, int width, int precision)
 {
-	unsigned long long n;
+	int	n;
 	int	size;
 	int len;
 	
-	n = (unsigned long long) va_arg(arg, void *);
-	len = ft_strhex_len(n);
-	size = pre_print_p(n, flag, width, len);
-	if (n && flag & FLAG_ZERO)
-		while (len + size < width)
+	n =	va_arg(arg, int);
+	len = ft_decimal_size(n);
+	size = 0;
+	if (n < 0)
+	{
+		size++;
+		len++;
+		if (flag & FLAG_DOT || flag & FLAG_ZERO)
+			write(1, "-", 1);
+	}
+	size += pre_print_d(flag, width, len);
+	if (flag & FLAG_DOT)
+		while (len + size < precision + 1)
+			size += ft_putchar ('0');
+	if (flag & FLAG_ZERO)
+		while (len + size < width + 1)
 			size += ft_putchar ('0');
 	if (flag & FLAG_MINUS)
-		ft_minus_p(n, width);
-	else if (n)
-		ft_puthex_p(n);
+		size += ft_minus_d(n, width);
+	else
+	{
+		if (n < 0 && !(flag & FLAG_DOT) && !(flag & FLAG_ZERO))
+			write(1, "-", 1);
+		size += ft_putnbr(n);
+	}
 	return (size);
 }
 

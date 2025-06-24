@@ -6,13 +6,14 @@
 #    By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/23 11:38:26 by nsaraiva          #+#    #+#              #
-#    Updated: 2025/06/23 17:02:50 by nsaraiva         ###   ########.fr        #
+#    Updated: 2025/06/24 00:50:20 by nsaraiva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 SRC = ft_printf.c ft_printf_utils.c ft_putchar.c \
-	  ft_char_utils.c ft_string_utils.c ft_pointer_utils.c  
+	  ft_char_utils.c ft_string_utils.c ft_pointer_utils.c \
+	  ft_decimal_utils.c 
 
 OBJ = $(SRC:.c=.o)
 

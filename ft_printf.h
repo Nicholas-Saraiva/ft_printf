@@ -6,7 +6,7 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 04:07:16 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/23 11:48:33 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/24 01:41:00 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,16 +28,10 @@ int	ft_strlen(const char *s);
 int	is_flag(char c);
 int	is_number(char my_char);
 int	fill_flags(const char **c);
-int	char_flag(char my_arg, int width);
-int	char_noflag(char my_arg, int width);
 int	condition_for_c(int flag, va_list args, int width);
-int	string_flag(char *my_arg, int flag, int width, int precision);
-int	string_noflag(char *my_arg, int flag, int width, int precision);
 int	condition_for_s(int flag, va_list args, int width, int precision);
-int	ft_puthex_p(unsigned long long n);
-int ft_strhex_len(unsigned long long n);
-int	ft_minus_p(unsigned long long n, int width);
 int	condition_for_p(int flag, va_list arg, int width);
+int	condition_for_d(int flag, va_list arg, int width, int precision);
 int	check_condition(int flag, const char **c, va_list args);
 int	ft_printf(const char *fstring, ...);
 void	fill_measures(int *width, int *precision, const char **c, int *flag);
