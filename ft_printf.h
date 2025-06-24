@@ -6,19 +6,24 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 04:07:16 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/13 16:40:01 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/24 19:11:00 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
+# include <unistd.h>
+# include <stdint.h>
+# include <stdarg.h>
 
-# define FLAG_MINUS 1 << 0; // 1
-# define FLAG_ZERO 1 << 1; // 2
-# define FLAG_DOT 1 << 2; // 4
-# define FLAG_HASH 1 << 3; // 8
-# define FLAG_SPACE 1 << 4; // 16
-# define FLAG_PLUS 1 << 5; // 32
-
+int	ft_putchar(char c);
+int	ft_strlen(const char *s);
+int	condition_for_c(va_list args);
+int	condition_for_s(va_list args);
+int	condition_for_p(va_list arg);
+int	condition_for_decimal(va_list arg);
+int	condition_for_udecimal(va_list arg);
+int	condition_for_hex(va_list arg, char fmt);
+int	ft_printf(const char *fstring, ...);
 
 #endif

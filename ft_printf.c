@@ -1,82 +1,59 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/22 21:37:58 by nsaraiva          #+#    #+#             */
+/*   Updated: 2025/06/24 19:18:24 by nsaraiva         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "ft_printf.h"
-#include <stdarg.h>
-#include <unistd.h>
-#include <stdio.h>
 
-char	fill_flags(int *flag, char *c)
+static int	check_condition(const char **c, va_list args)
 {
-	char	*my_char;
-
-	my_char = c;
-
-	while (*my_char)
-	{
-		if (*my_char == '+')
-			flag |= FLAG_PLUS;
-
-		if (*my_char == ' ' && !(flag & FLAG_PLUS))
-			flag |= FLAG_SPACE;
-		if (*my_char == '-')
-		{
-			flag |= FLAG_MINUS;
-			while (*my_char && (my_char >= '0' && my_char <= '9'))
-				my_char++;
-			if (*my_char == '#' || *my_char == '+' || *my_char == ' ' ||*my_char == '-')
-				return (NULL);
-			continue ;
-		}
-		if (*my_char == '0' && !(flag & FLAG_MINUS))
-			flag |= FLAG_ZERO;
-			while (*my_char && (my_char >= '0' && my_char <= '9'))
-				my_char++;
-			if (*my_char == '#' || *my_char == '+' || *my_char == ' ')
-				return (NULL);
-			continue ;
-		if (*my_char == '.')
-			flag |= FLAG_DOT;
-			while (*my_char && (my_char >= '0' && my_char <= '9'))
-				my_char++;
-			if (*my_char == '#' || *my_char == '+' || *my_char == ' ' || *my_char == '.')
-				return (NULL);
-			continue ;
-		if (*my_char == '#')
-			flag |= FLAG_HASH;
-	}
+	if (**c == 'c')
+		return (condition_for_c(args));
+	if (**c == 's')
+		return (condition_for_s(args));
+	if (**c == 'p')
+		return (condition_for_p(args));
+	if (**c == 'd' || **c == 'i')
+		return (condition_for_decimal(args));
+	if (**c == 'u')
+		return (condition_for_udecimal(args));
+	if (**c == 'x' || **c == 'X')
+		return (condition_for_hex(args, **c));
+	if (**c == '%')
+		return (ft_putchar(**c));
+	return (0);
 }
 
 int	ft_printf(const char *fstring, ...)
 {
-	va_list	args;
-	char	*c;
-	int		flag;
+	const char	*c;
+	va_list		args;
+	int			size;
 
 	va_start(args, fstring);
 	c = fstring;
-	flag = 0;
+	size = 0;
 	while (*c)
 	{
 		if(*c != '%')
 		{
-			putchar(*c);
-			c++;
-			continue ;
+			ft_putchar(*c);
+			size++;
 		}
-		p++;
-		fill_flags(&flag, c, args);
-		if (!flag)
+		else
 		{
-			puthcar('%')
-			continue ;
+			c++;
+			size += check_condition(&c, args);
 		}
+		c++;
 	}
-	va_end(ap);
-}
-
-int	main()
-{
-	char	ola[] = "BUENO :)";
-	int		number	= 3;
-
-	minprintf("HOJE stoy %d dias %s\n", number, ola);
-	printf("HOJE estoy %d dias %s", number, ola);
+	va_end(args);
+	return (size);
 }
