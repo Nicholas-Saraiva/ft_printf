@@ -6,30 +6,32 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/23 11:34:50 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/24 20:04:20 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/25 10:30:54 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-static int ft_puthex(unsigned int n)
+static int	ft_puthex(unsigned long long n)
 {
-    int size;
+	int	size;
 
-    size = 0;
-    if (n >= 16)
+	size = 0;
+	if (n >= 16)
 		size += ft_puthex(n / 16);
 	if ((n % 16) < 10)
-		 size += ft_putchar((n % 16) + '0');
-    else
+		size += ft_putchar((n % 16) + '0');
+	else
 		size += ft_putchar((n % 16) - 10 + 'a');
-    return (size);
+	return (size);
 }
 
 int	condition_for_p(va_list arg)
 {
-	unsigned int	n;
-	
+	unsigned long long	n;
+
 	n = va_arg(arg, unsigned long long);
-	return (ft_puthex(n));
+	if (!n)
+		return (write(1, "(nil)", 5));
+	return (write(1, "0x", 2) + ft_puthex(n));
 }

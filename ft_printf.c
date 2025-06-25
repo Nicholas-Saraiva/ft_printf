@@ -6,7 +6,7 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/22 21:37:58 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/24 19:18:24 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/06/25 10:32:03 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	ft_printf(const char *fstring, ...)
 	size = 0;
 	while (*c)
 	{
-		if(*c != '%')
+		if (*c != '%')
 		{
 			ft_putchar(*c);
 			size++;
