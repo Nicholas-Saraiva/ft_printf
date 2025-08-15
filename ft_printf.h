@@ -6,7 +6,7 @@
 /*   By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/13 04:07:16 by nsaraiva          #+#    #+#             */
-/*   Updated: 2025/06/24 19:11:00 by nsaraiva         ###   ########.fr       */
+/*   Updated: 2025/08/15 12:47:41 by nsaraiva         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <stdarg.h>
 
 int	ft_putchar(char c);
-int	ft_strlen(const char *s);
+int	ft_print_strlen(const char *s);
 int	condition_for_c(va_list args);
 int	condition_for_s(va_list args);
 int	condition_for_p(va_list arg);

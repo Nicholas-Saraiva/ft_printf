@@ -6,7 +6,7 @@
 #    By: nsaraiva <nsaraiva@student.42porto.com>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/06/23 11:38:26 by nsaraiva          #+#    #+#              #
-#    Updated: 2025/06/24 19:34:53 by nsaraiva         ###   ########.fr        #
+#    Updated: 2025/08/15 12:46:40 by nsaraiva         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,7 +24,7 @@ all : $(NAME)
 $(NAME) : $(OBJ) 
 	ar -rcs $(NAME) $(OBJ)	
 $(OBJ) : $(SRC)
-	cc -c -Wall -Wextra -Werror -gdwarf-4 $(SRC)	
+	cc -c -Wall -Wextra -Werror  $(SRC)
 
 clean:
 	rm -rf $(OBJ) $(OBJ_BONUS)
